@@ -46,31 +46,40 @@ class window(QWidget):
     def getImg(self):
         self.img, _ = QFileDialog.getOpenFileName(self, 'Open file',
                                                   None, "Image files (*.jpg *.gif *png)")
-                                                
+
         if self.img and os.path.exists(self.img):
             pixmap = QPixmap(self.img)
-            print(pixmap.width())
-            print(pixmap.height())
-            pixmap.scaled(800, 600)
+            pixmap.scaled(800, 600, Qt.KeepAspectRatio)
             self.label.setPixmap(pixmap)
 
     def saveImg(self):
         img_black_white = self.convertImg()
-        print(img_black_white)
-        if(hasattr(self, "img") and self.img != ""):
+
+        # Thay doi dieu kiem kiem tra img_black_white
+        if(img_black_white is not None):
             # Lưu ảnh
-            pathSave, _ = QFileDialog.getSaveFileName(self, "Save image", None, "Image files (*.jpg *.gif *png)" )
+            pathSave, _ = QFileDialog.getSaveFileName(
+                self, "Save image", None, "Image files (*.jpg *.gif *png)")
             print("pathSave", pathSave)
-            if pathSave and os.path.exists(pathSave):
+            if pathSave != "":
                 cv2.imwrite(pathSave, img_black_white)
             else:
                 self.label.setText("")
-
         else:
             self.label.setText(
                 "<b style=\"color: red;\">Please choose image</b>")
+
     def showConvert(self):
-        pass
+        image = self.convertImg()
+        if(image is not None):
+            # img = QImage(
+            #     image.data, image.shape[1], image.shape[0], QImage.Format_Grayscale8)
+            # self.label.setPixmap(QPixmap.fromImage(img))
+            cv2.imshow("fdsaf", image)
+        else:
+            self.label.setText(
+                "<b style=\"color: red;\">Cannot convert image</b>")
+
     def convertImg(self):
         if(hasattr(self, "img") and self.img != ""):
             img = cv2.imread(self.img)
@@ -92,7 +101,6 @@ class window(QWidget):
             return img_black_white
         else:
             return None
-
 
 
 def main():
