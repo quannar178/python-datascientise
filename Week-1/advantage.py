@@ -13,15 +13,15 @@ class window(QWidget):
     def __init__(self, parent=None):
         super(window, self).__init__(parent)
 
-        btnChoose = QPushButton("Choose Button")
+        btnChoose = QPushButton("Choose")
         btnChoose.clicked.connect(self.getImg)
         # btnChoose.setShortcut("Ctr+O")
 
-        btnSave = QPushButton("Save Button")
+        btnSave = QPushButton("Save")
         btnSave.clicked.connect(self.saveImg)
         # btnSave.setShortcut("Ctrl+S")
 
-        btnConvert = QPushButton("Conver Image")
+        btnConvert = QPushButton("Convert Image")
         btnConvert.clicked.connect(self.showConvert)
 
         hbox = QHBoxLayout()
@@ -31,7 +31,7 @@ class window(QWidget):
         hbox.addWidget(btnSave)
 
         self.label = QLabel("Image")
-        self.label.setFixedSize(800, 600)
+        self.label.setMinimumSize(800, 600)
         self.label.setAlignment(Qt.AlignCenter)
 
         vbox = QVBoxLayout()
@@ -49,7 +49,7 @@ class window(QWidget):
 
         if self.img and os.path.exists(self.img):
             pixmap = QPixmap(self.img)
-            pixmap.scaled(800, 600, Qt.KeepAspectRatio)
+            # pixmap = pixmap.scaled(800, 600, Qt.KeepAspectRatio)
             self.label.setPixmap(pixmap)
 
     def saveImg(self):
@@ -71,11 +71,12 @@ class window(QWidget):
 
     def showConvert(self):
         image = self.convertImg()
+        print(image.shape)
         if(image is not None):
             # img = QImage(
-            #     image.data, image.shape[1], image.shape[0], QImage.Format_Grayscale8)
+            #     image.data, image.shape[1], image.shape[0], QImage.Format_RGB32)
             # self.label.setPixmap(QPixmap.fromImage(img))
-            cv2.imshow("fdsaf", image)
+            cv2.imshow("Convert Image", image)
         else:
             self.label.setText(
                 "<b style=\"color: red;\">Cannot convert image</b>")

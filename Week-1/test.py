@@ -1,22 +1,20 @@
-import sys
-from PyQt5.QtGui import QPixmap
-from PyQt5.QtWidgets import QMainWindow, QApplication, QLabel
+import numpy as np
+import cv2
 
-class MainWindow(QMainWindow):
+cap = cv2.VideoCapture(0)
 
-    def __init__(self):
-        super(MainWindow, self).__init__()
-        self.title = "Image Viewer"
-        self.setWindowTitle(self.title)
+while(True):
+    # Capture frame-by-frame
+    ret, frame = cap.read()
 
-        label = QLabel(self)
-        pixmap = QPixmap('cat.jpg')
-        label.setPixmap(pixmap)
-        self.setCentralWidget(label)
-        self.resize(self.width(), self.height())
+    # Our operations on the frame come here
+    frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    thresh, img = cv2.threshold(frame, 127, 255, cv2.THRESH_BINARY)
+    # Display the resulting frame
+    cv2.imshow('frame', img)
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
 
-
-app = QApplication(sys.argv)
-w = MainWindow()
-w.show()
-sys.exit(app.exec_())
+# When everything done, release the capture
+cap.release()
+cv2.destroyAllWindows()
